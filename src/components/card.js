@@ -1,3 +1,7 @@
+export function deleteCard(cardElement) {
+  cardElement.remove();
+}
+
 export function createCard(cardData, deleteCallback, likeCallback, imageClickCallback) {
   const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);

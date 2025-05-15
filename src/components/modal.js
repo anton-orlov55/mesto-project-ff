@@ -1,28 +1,41 @@
-export function openModal(modal) {
-  modal.classList.add('popup_is-opened');
-  document.addEventListener('keydown', handleEscClose);
-}
+// Функция закрытия по Esc
+const handleEscClose = (evt, closeModal) => {
+  if (evt.key === 'Escape') closeModal();
+};
 
-export function closeModal(modal) {
-  modal.classList.remove('popup_is-opened');
-  document.removeEventListener('keydown', handleEscClose);
-}
+// Открытие модального окна
+export const openModal = (modalElement) => {
+  modalElement.classList.add('popup_is-opened');
+  
+  // Добавляем обработчик Esc с привязанным контекстом
+  const escHandler = (evt) => handleEscClose(evt, () => closeModal(modalElement));
+  document.addEventListener('keydown', escHandler);
+  
+  // Возвращаем функцию для очистки
+  return () => document.removeEventListener('keydown', escHandler);
+};
 
-function handleEscClose(evt) {
-  if (evt.key === 'Escape') {
-    const openedModal = document.querySelector('.popup_is-opened');
-    if (openedModal) {
-      closeModal(openedModal);
-    }
-  }
-}
+// Закрытие модального окна
+export const closeModal = (modalElement) => {
+  modalElement.classList.remove('popup_is-opened');
+};
 
-export function setupModalCloseListeners() {
-  document.querySelectorAll('.popup').forEach(modal => {
-    modal.addEventListener('mousedown', (evt) => {
-      if (evt.target === modal || evt.target.classList.contains('popup__close')) {
-        closeModal(modal);
+// Инициализация закрытия по клику
+export const setupModalCloseListeners = (modalElements) => {
+  const cleanups = [];
+  
+  modalElements.forEach(modalElement => {
+    const clickHandler = (evt) => {
+      if (evt.target === modalElement || evt.target.closest('.popup__close')) {
+        closeModal(modalElement);
       }
+    };
+    
+    modalElement.addEventListener('mousedown', clickHandler);
+    cleanups.push(() => {
+      modalElement.removeEventListener('mousedown', clickHandler);
     });
   });
-}
+  
+  return () => cleanups.forEach(cleanup => cleanup());
+};

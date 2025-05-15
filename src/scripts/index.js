@@ -15,73 +15,71 @@
 // DOM узлы
 
 
+// scripts/index.js
+
 import avatar from '../images/avatar.jpg';
-
-document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
-
 import '../pages/index.css';
 import { initialCards } from './cards.js';
-import { createCard, handleLike } from '../components/card.js';
+import { createCard, deleteCard, handleLike } from '../components/card.js';
 import { openModal, closeModal, setupModalCloseListeners } from '../components/modal.js';
 
+// Инициализация профиля
+document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
 
+// DOM элементы
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const placesList = document.querySelector('.places__list');
 
+// Попапы
+const modals = {
+  editProfile: document.querySelector('.popup_type_edit'),
+  addCard: document.querySelector('.popup_type_new-card'),
+  imageView: document.querySelector('.popup_type_image')
+};
 
-const editProfilePopup = document.querySelector('.popup_type_edit');
-const addCardPopup = document.querySelector('.popup_type_new-card');
-const imagePopup = document.querySelector('.popup_type_image');
-
-
+// Формы
 const editProfileForm = document.forms['edit-profile'];
 const addCardForm = document.forms['new-place'];
 
+// Инициализация модальных окон
+const cleanupModalListeners = setupModalCloseListeners(Object.values(modals));
 
-setupModalCloseListeners();
-
-
-profileEditButton.addEventListener('click', () => {
-  editProfileForm.elements.name.value = profileTitle.textContent;
-  editProfileForm.elements.description.value = profileDescription.textContent;
-  openModal(editProfilePopup);
-});
-
-profileAddButton.addEventListener('click', () => {
-  addCardForm.reset();
-  openModal(addCardPopup);
-});
-
-
-function deleteCard(cardElement) {
-  cardElement.remove();
-}
-
-
+// Функция открытия попапа с изображением
 function openImagePopup(cardData) {
-  const popupImage = imagePopup.querySelector('.popup__image');
-  const popupCaption = imagePopup.querySelector('.popup__caption');
+  const popupImage = modals.imageView.querySelector('.popup__image');
+  const popupCaption = modals.imageView.querySelector('.popup__caption');
   
   popupImage.src = cardData.link;
   popupImage.alt = cardData.name;
   popupCaption.textContent = cardData.name;
   
-  openModal(imagePopup);
+  openModal(modals.imageView);
 }
 
+// Обработчики кнопок
+profileEditButton.addEventListener('click', () => {
+  editProfileForm.elements.name.value = profileTitle.textContent;
+  editProfileForm.elements.description.value = profileDescription.textContent;
+  openModal(modals.editProfile);
+});
 
-function handleProfileFormSubmit(evt) {
+profileAddButton.addEventListener('click', () => {
+  addCardForm.reset();
+  openModal(modals.addCard);
+});
+
+// Обработчики форм
+editProfileForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   profileTitle.textContent = editProfileForm.elements.name.value;
   profileDescription.textContent = editProfileForm.elements.description.value;
-  closeModal(editProfilePopup);
-}
+  closeModal(modals.editProfile);
+});
 
-
-function handleAddCardFormSubmit(evt) {
+addCardForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   
   const newCard = {
@@ -97,14 +95,11 @@ function handleAddCardFormSubmit(evt) {
   );
   
   placesList.prepend(cardElement);
-  closeModal(addCardPopup);
-}
+  addCardForm.reset();
+  closeModal(modals.addCard);
+});
 
-
-editProfileForm.addEventListener('submit', handleProfileFormSubmit);
-addCardForm.addEventListener('submit', handleAddCardFormSubmit);
-
-
+// Рендер начальных карточек
 initialCards.forEach(cardData => {
   const cardElement = createCard(
     cardData,
@@ -114,3 +109,6 @@ initialCards.forEach(cardData => {
   );
   placesList.append(cardElement);
 });
+
+// Очистка при размонтировании (если нужно)
+window.addEventListener('beforeunload', cleanupModalListeners);
