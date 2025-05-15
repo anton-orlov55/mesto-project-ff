@@ -23,31 +23,31 @@ import { initialCards } from './cards.js';
 import { createCard, deleteCard, handleLike } from '../components/card.js';
 import { openModal, closeModal, setupModalCloseListeners } from '../components/modal.js';
 
-// Инициализация профиля
+
 document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
 
-// DOM элементы
+
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileAddButton = document.querySelector('.profile__add-button');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 const placesList = document.querySelector('.places__list');
 
-// Попапы
+
 const modals = {
   editProfile: document.querySelector('.popup_type_edit'),
   addCard: document.querySelector('.popup_type_new-card'),
   imageView: document.querySelector('.popup_type_image')
 };
 
-// Формы
+
 const editProfileForm = document.forms['edit-profile'];
 const addCardForm = document.forms['new-place'];
 
-// Инициализация модальных окон
+
 const cleanupModalListeners = setupModalCloseListeners(Object.values(modals));
 
-// Функция открытия попапа с изображением
+
 function openImagePopup(cardData) {
   const popupImage = modals.imageView.querySelector('.popup__image');
   const popupCaption = modals.imageView.querySelector('.popup__caption');
@@ -59,7 +59,7 @@ function openImagePopup(cardData) {
   openModal(modals.imageView);
 }
 
-// Обработчики кнопок
+
 profileEditButton.addEventListener('click', () => {
   editProfileForm.elements.name.value = profileTitle.textContent;
   editProfileForm.elements.description.value = profileDescription.textContent;
@@ -71,7 +71,7 @@ profileAddButton.addEventListener('click', () => {
   openModal(modals.addCard);
 });
 
-// Обработчики форм
+
 editProfileForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   profileTitle.textContent = editProfileForm.elements.name.value;
@@ -99,7 +99,7 @@ addCardForm.addEventListener('submit', (evt) => {
   closeModal(modals.addCard);
 });
 
-// Рендер начальных карточек
+
 initialCards.forEach(cardData => {
   const cardElement = createCard(
     cardData,
@@ -109,6 +109,3 @@ initialCards.forEach(cardData => {
   );
   placesList.append(cardElement);
 });
-
-// Очистка при размонтировании (если нужно)
-window.addEventListener('beforeunload', cleanupModalListeners);
