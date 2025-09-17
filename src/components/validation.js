@@ -53,11 +53,11 @@ const checkLengthValidity = (inputElement) => {
 };
 
 const getCustomErrorMessage = (inputElement, validity) => {
-   if (validity.valueMissing) {
+    if (validity.valueMissing) {
     return errorMessages.valueMissing;
   }
   
-   if (!checkPatternValidity(inputElement)) {
+    if (!checkPatternValidity(inputElement)) {
     return errorMessages.patternMismatch;
   }
   
@@ -85,7 +85,7 @@ const getCustomErrorMessage = (inputElement, validity) => {
 };
 
 const checkInputValidity = (formElement, inputElement, config) => {
-  const isPatternValid = checkPatternValidity(inputElement);
+    const isPatternValid = checkPatternValidity(inputElement);
   const isLengthValid = checkLengthValidity(inputElement);
   
   if (!inputElement.validity.valid || !isPatternValid || !isLengthValid) {
