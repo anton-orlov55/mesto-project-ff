@@ -11,7 +11,6 @@ let currentUserId = null;
 const logoElement = document.querySelector('.header__logo'); 
 if (logoElement) logoElement.src = logo; 
  
-// Находим DOM-элементы для изображения один раз
 const popupImage = document.querySelector('.popup__image');
 const popupCaption = document.querySelector('.popup__caption');
 
