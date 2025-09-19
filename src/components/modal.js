@@ -11,13 +11,22 @@ export const openModal = (modalElement) => {
     closeModal(openedPopup);
   }
   
-  modalElement.classList.add('popup_is-opened');
-  openedPopup = modalElement;
-  document.addEventListener('keydown', handleEscClose);
+    modalElement.classList.add('popup_is-animated');
+  
+  setTimeout(() => {
+    modalElement.classList.add('popup_is-opened');
+    openedPopup = modalElement;
+    document.addEventListener('keydown', handleEscClose);
+  }, 10);
 };
 
 export const closeModal = (modalElement) => {
   modalElement.classList.remove('popup_is-opened');
+  
+    setTimeout(() => {
+    modalElement.classList.remove('popup_is-animated');
+  }, 300);
+  
   if (openedPopup === modalElement) {
     openedPopup = null;
     document.removeEventListener('keydown', handleEscClose);
